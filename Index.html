@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PULSE | Marketing Project - Semana 5</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --azul-pulse: #34B3E4;
+            --verde-pulse: #C0DF3E;
+            --nardo-grey: #4A4A4A;
+            --fondo-gradiente: linear-gradient(135deg, #1a2a33 0%, #0d1117 100%);
+            --white: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--fondo-gradiente);
+            color: var(--white);
+            line-height: 1.6;
+        }
+
+        /* --- NAVEGACIÓN --- */
+        nav {
+            padding: 20px 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            position: fixed; width: 100%; z-index: 1000;
+            background: rgba(13, 17, 23, 0.85); backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(52, 179, 228, 0.2);
+        }
+        .logo { font-weight: 900; font-size: 1.8rem; color: var(--azul-pulse); text-decoration: none; letter-spacing: 2px; }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; padding: 0 10%;
+        }
+        .hero h1 { font-size: clamp(3.5rem, 12vw, 7rem); font-weight: 900; line-height: 1; margin-bottom: 15px; }
+        .hero p { font-size: 1.2rem; color: var(--azul-pulse); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 40px; }
+        
+        .hero-img {
+            width: 100%; max-width: 800px; border-radius: 30px; 
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* --- GALERÍA DE PRODUCTO REAL (SEMANA 4) --- */
+        .section-title { text-align: center; margin: 80px 0 40px; font-size: 2.5rem; color: var(--verde-pulse); }
+        
+        .product-gallery {
+            padding: 0 10%;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;
+        }
+        .img-card { border-radius: 20px; overflow: hidden; border: 1px solid var(--azul-pulse); height: 350px; }
+        .img-card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .img-card:hover img { transform: scale(1.1); }
+
+        /* --- NUESTRA HISTORIA (RESUMEN SEMANA 1-5) --- */
+        .history-box {
+            margin: 100px 10%; padding: 60px;
+            background: rgba(255, 255, 255, 0.03); border-radius: 40px;
+            border-left: 5px solid var(--azul-pulse);
+        }
+        .history-box p { font-size: 1.1rem; margin-bottom: 20px; font-weight: 300; color: #ccc; }
+
+        /* --- PASARELA DE PAGO --- */
+        .checkout-container { padding: 100px 10%; text-align: center; }
+        .payment-card {
+            background: rgba(18, 18, 18, 0.6); padding: 50px; border-radius: 35px;
+            border: 2px solid var(--verde-pulse); max-width: 600px; margin: 0 auto;
+        }
+        .price { font-size: 4rem; font-weight: 900; color: var(--verde-pulse); margin: 20px 0; }
+        .btn-pay {
+            background: var(--azul-pulse); color: white; padding: 20px 60px;
+            border: none; border-radius: 50px; font-size: 1.3rem; font-weight: 700;
+            cursor: pointer; transition: 0.4s; width: 100%;
+        }
+        .btn-pay:hover { background: var(--verde-pulse); color: #000; transform: translateY(-5px); }
+
+        /* --- REDES SOCIALES --- */
+        .social-bar { padding: 60px 10%; text-align: center; }
+        .social-grid { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .social-btn {
+            padding: 15px 35px; border-radius: 15px; text-decoration: none; font-weight: 700; color: white; transition: 0.3s;
+        }
+        .ig-btn { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+        .tt-btn { background: #000; border: 1px solid #ff0050; }
+        .social-btn:hover { transform: scale(1.05); filter: brightness(1.1); }
+
+        /* --- CHATBOT --- */
+        #chatbot { position: fixed; bottom: 30px; right: 30px; z-index: 2000; }
+        #chat-trigger {
+            background: var(--azul-pulse); width: 65px; height: 65px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4); border: 2px solid white;
+        }
+        #chat-window {
+            display: none; width: 350px; height: 500px; background: #1a1a1a;
+            border: 1px solid var(--azul-pulse); border-radius: 25px; position: absolute;
+            bottom: 80px; right: 0; flex-direction: column; overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+        }
+        .chat-header { background: var(--azul-pulse); padding: 15px; font-weight: 900; }
+        .chat-msgs { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; }
+        .msg { padding: 10px; border-radius: 12px; max-width: 80%; }
+        .bot { background: var(--nardo-grey); align-self: flex-start; }
+        .user { background: var(--azul-pulse); align-self: flex-end; }
+        .chat-footer { padding: 10px; background: #222; display: flex; flex-wrap: wrap; gap: 5px; }
+        .faq-btn { background: transparent; border: 1px solid var(--azul-pulse); color: white; padding: 5px; border-radius: 5px; font-size: 0.7rem; cursor: pointer; }
+
+        /* --- PANTALLA DE ÉXITO --- */
+        #success-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--fondo-gradiente); z-index: 9999;
+            flex-direction: column; justify-content: center; align-items: center; text-align: center;
+        }
+
+        footer { padding: 40px; text-align: center; opacity: 0.5; font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.1); }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="logo">PULSE</a>
+        <a href="#checkout" style="color:var(--verde-pulse); text-decoration:none; font-weight:700;">ORDENAR</a>
+    </nav>
+
+    <section class="hero">
+        <h1>RECONECTA.</h1>
+        <p>Seguridad Situacional a cada Kilómetro</p>
+        <img src="https://images.unsplash.com/photo-1594882645126-14020914d58d?q=80&w=1200" class="hero-img" alt="PULSE Real">
+    </section>
+
+    <h2 class="section-title">Nuestra Galería</h2>
+    <section class="product-gallery">
+        <div class="img-card"><img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=800" alt="Resina Detalle"></div>
+        <div class="img-card"><img src="https://images.unsplash.com/photo-1502126324834-38f8e02d7160?q=80&w=800" alt="Arnés Real"></div>
+        <div class="img-card"><img src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?q=80&w=800" alt="Prueba de campo"></div>
+    </section>
+
+    <section class="history-box">
+        <h2 style="color:var(--azul-pulse); margin-bottom: 20px;">El Viaje de PULSE (Semanas 1-5)</h2>
+        <p><strong>Semana 1-2:</strong> Nacimos de un problema real en CDMX. Los audífonos aislan al corredor, PULSE lo integra a su entorno. Definimos el uso de resina de alta resistencia.</p>
+        <p><strong>Semana 3-4:</strong> Validamos la viabilidad comercial. Pasamos de ser una sublínea a una marca independiente. Perfeccionamos el arnés de compresión para eliminar rebotes.</p>
+        <p><strong>Semana 5:</strong> Lanzamiento oficial de la plataforma digital con un enfoque en venta por paquete único, sin suscripciones y soporte directo vía redes sociales.</p>
+    </section>
+
+    <section id="checkout" class="checkout-container">
+        <div class="payment-card">
+            <h2>Consigue tu PULSE</h2>
+            <p>Unidad de audio en resina + Arnés + Cable Tipo C</p>
+            <div class="price">$3,200 MXN</div>
+            <button class="btn-pay" onclick="showSuccess()">HACER PEDIDO</button>
+            <p style="margin-top:15px; font-size:0.8rem;">*Envío Gratis a CDMX vía DHL</p>
+        </div>
+    </section>
+
+    <section class="social-bar">
+        <h3>Únete a la Comunidad</h3>
+        <div class="social-grid">
+            <a href="https://www.instagram.com/pulse_cdmx/" target="_blank" class="social-btn ig-btn">INSTAGRAM</a>
+            <a href="https://www.tiktok.com/@pulse_cdmx" target="_blank" class="social-btn tt-btn">TIKTOK</a>
+        </div>
+    </section>
+
+    <div id="chatbot">
+        <div id="chat-window">
+            <div class="chat-header">PULSE Bot ⚡</div>
+            <div class="chat-msgs" id="chat-msgs">
+                <div class="msg bot">¡Hola Gabriel! Soy el asistente virtual de PULSE. ¿Qué duda tienes hoy?</div>
+            </div>
+            <div class="chat-footer">
+                <button class="faq-btn" onclick="botReply('¿Cuánto cuesta el producto?')">Precio</button>
+                <button class="faq-btn" onclick="botReply('¿El envío tiene costo?')">Envío</button>
+                <button class="faq-btn" onclick="botReply('¿De qué material es el producto?')">Material</button>
+                <button class="faq-btn" onclick="botReply('¿Tiene garantía?')">Garantía</button>
+                <button class="faq-btn" onclick="botReply('¿Cómo puedo contactarlos?')">Contacto</button>
+            </div>
+        </div>
+        <div id="chat-trigger" onclick="toggleChat()">💬</div>
+    </div>
+
+    <div id="success-overlay">
+        <h1 style="color:var(--verde-pulse);">¡GRACIAS POR TU PEDIDO!</h1>
+        <p>Hemos recibido tu solicitud de compra para el paquete PULSE.</p>
+        <p>DHL te enviará el número de guía en breve.</p>
+        <br>
+        <button class="btn-pay" style="width:auto;" onclick="location.reload()">VOLVER</button>
+    </div>
+
+    <footer>
+        <p>© 2026 PULSE CDMX | Universidad La Salle | Marketing Estudiantil</p>
+    </footer>
+
+    <script>
+        function toggleChat() {
+            const chat = document.getElementById('chat-window');
+            chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        const brain = {
+            "¿Cuánto cuesta el producto?": "El precio es de $3,200 MXN e incluye impuestos.",
+            "¿El envío tiene costo?": "El envío es gratis a CDMX y llega en menos de una semana vía DHL.",
+            "¿De qué material es el producto?": "Está fabricado con resina de alta resistencia y durabilidad.",
+            "¿Tiene garantía?": "Sí, el producto cuenta con 1 año de garantía total.",
+            "¿Cómo puedo contactarlos?": "Escríbenos directamente por Instagram (@pulse_cdmx) y con gusto te ayudamos.",
+            "¿El precio incluye impuestos?": "Sí, el precio de $3,200 ya incluye todos los impuestos.",
+            "¿Con qué paquetería envían?": "Enviamos exclusivamente por DHL para asegurar tu entrega."
+        };
+
+        function botReply(q) {
+            const container = document.getElementById('chat-msgs');
+            container.innerHTML += `<div class="msg user">${q}</div>`;
+            setTimeout(() => {
+                container.innerHTML += `<div class="msg bot">${brain[q] || "Para eso, mejor escríbenos por Instagram."}</div>`;
+                container.scrollTop = container.scrollHeight;
+            }, 600);
+        }
+
+        function showSuccess() {
+            document.getElementById('success-overlay').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
